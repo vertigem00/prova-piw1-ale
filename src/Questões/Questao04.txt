@@ -1,0 +1,64 @@
+O problema ocorre quando precisamos passar uma propriedade por diversos componentes filhos e netos até que ela chegue ao componente que realmente precisa utilizá-la. Isso pode tornar o código difícil de manter, confuso e resultar em uma quantidade desnecessária de código, podendo até mesmo deixar o sistema lento ou não funcionar corretamente.
+
+Uma solução para esse problema é utilizar contextos. Os contextos permitem compartilhar dados entre componentes sem a necessidade de passá-los manualmente através das props.
+
+Neste exemplo, temos três componentes: Avô, Pai e Filho. O componente Avô cria um contexto chamado MeuContexto e define um valor para a propriedade que o Filho precisa acessar.
+
+O componente Pai não precisa fazer nada em relação ao contexto. Ele simplesmente renderiza o componente Filho.
+
+No componente Filho, utilizamos o hook useContext para consumir o valor do contexto MeuContexto e acessar a propriedade diretamente.
+
+Por fim, o componente App engloba o componente Avô.
+
+Dessa forma, a propriedade definida no Avô é acessada pelo Filho sem a necessidade de passá-la manualmente pelos componentes intermediários, evitando o "props drilling" e simplificando o código.
+
+import React, { createContext, useContext } from "react";
+
+// Criando o contexto
+const MeuContexto = createContext();
+
+// Componente Avô
+const Avô = () => {
+  const propriedade = "Valor da propriedade";
+
+  return (
+    <MeuContexto.Provider value={propriedade}>
+      <Pai />
+    </MeuContexto.Provider>
+  );
+};
+
+// Componente Pai
+const Pai = () => {
+  return (
+    <div>
+      <Filho />
+    </div>
+  );
+};
+
+// Componente Filho
+const Filho = () => {
+  const propriedade = useContext(MeuContexto);
+
+  return (
+    <div>
+      <p>Propriedade: {propriedade}</p>
+    </div>
+  );
+};
+
+// App
+const App = () => {
+  return (
+    <div>
+      <Avô />
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
